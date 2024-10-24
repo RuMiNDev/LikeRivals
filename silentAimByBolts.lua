@@ -87,13 +87,13 @@ UserInputService.InputBegan:Connect(function(input, isProcessed)
     end
 end)
 
--- UserInputService.InputEnded:Connect(function(input, isProcessed)
---     if input.UserInputType == Enum.UserInputType.MouseButton1 and not isProcessed then
---         isLeftMouseDown = false
---     elseif input.UserInputType == Enum.UserInputType.MouseButton2 and not isProcessed then
---         isRightMouseDown = false
---     end
--- end)
+UserInputService.InputEnded:Connect(function(input, isProcessed)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and not isProcessed then
+        isLeftMouseDown = false
+    elseif input.UserInputType == Enum.UserInputType.MouseButton2 and not isProcessed then
+        isRightMouseDown = false
+    end
+end)
 
 RunService.Heartbeat:Connect(function()
     if not isLobbyVisible() then
