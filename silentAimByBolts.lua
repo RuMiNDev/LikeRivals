@@ -72,70 +72,34 @@ local function autoClick()
 end
 
 UserInputService.InputBegan:Connect(function(input, isProcessed)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 and not isProcessed then
-        if not isLeftMouseDown then
-            isLeftMouseDown = true
-            task.spawn(autoClick)
-        end
-    elseif input.UserInputType == Enum.UserInputType.MouseButton2 and not isProcessed then
-        if not isRightMouseDown then
-            isRightMouseDown = true
-            task.spawn(autoClick)
+    if Settings.SilentAimEnabled == true then
+        if input.UserInputType == Enum.UserInputType.MouseButton1 and not isProcessed then
+            if not isLeftMouseDown then
+                isLeftMouseDown = true
+                task.spawn(autoClick)
+            end
+        elseif input.UserInputType == Enum.UserInputType.MouseButton2 and not isProcessed then
+            if not isRightMouseDown then
+                isRightMouseDown = true
+                task.spawn(autoClick)
+            end
         end
     end
 end)
 
-UserInputService.InputEnded:Connect(function(input, isProcessed)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 and not isProcessed then
-        isLeftMouseDown = false
-    elseif input.UserInputType == Enum.UserInputType.MouseButton2 and not isProcessed then
-        isRightMouseDown = false
-    end
-end)
+-- UserInputService.InputEnded:Connect(function(input, isProcessed)
+--     if input.UserInputType == Enum.UserInputType.MouseButton1 and not isProcessed then
+--         isLeftMouseDown = false
+--     elseif input.UserInputType == Enum.UserInputType.MouseButton2 and not isProcessed then
+--         isRightMouseDown = false
+--     end
+-- end)
 
 RunService.Heartbeat:Connect(function()
     if not isLobbyVisible() then
-        if library.flags.silentAimEnabled then
-            targetPlayer = getClosestPlayerToMouse()
-            if targetPlayer then
-                lockCameraToHead()
-            end
+        targetPlayer = getClosestPlayerToMouse()
+        if targetPlayer then
+            lockCameraToHead()
         end
     end
-end)
-
--- New code block from the suggestion
-local LocalPlayer = Players.LocalPlayer
-local Camera = game:GetService("Workspace").CurrentCamera
-local Mouse = LocalPlayer:GetMouse()
-
-local function getClosestPlayerToCursor()
-    local closestPlayer = nil
-    local shortestDistance = math.huge
-
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
-            local pos = Camera:WorldToViewportPoint(player.Character.Head.Position)
-            local distance = (Vector2.new(pos.X, pos.Y) - Vector2.new(Mouse.X, Mouse.Y)).magnitude
-
-            if distance < shortestDistance then
-                closestPlayer = player
-                shortestDistance = distance
-            end
-        end
-    end
-
-    return closestPlayer
-end
-
-local function aimAt(target)
-    if target and target.Character and target.Character:FindFirstChild("Head") then
-        local head = target.Character.Head
-        Camera.CFrame = CFrame.new(Camera.CFrame.Position, head.Position)
-    end
-end
-
-game:GetService("RunService").RenderStepped:Connect(function()
-    local target = getClosestPlayerToCursor()
-    aimAt(target)
 end)
